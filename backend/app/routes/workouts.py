@@ -5,6 +5,7 @@ API endpoints for exercise catalog, workout programs, and client logging.
 
 from datetime import datetime
 from flask import Blueprint, request, jsonify, g, current_app
+from app.extensions import db
 from app.services.workout_service import WorkoutService
 from app.middleware.auth_middleware import token_required, admin_required, client_or_admin_required
 

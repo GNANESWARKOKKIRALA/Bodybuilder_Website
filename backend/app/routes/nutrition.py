@@ -5,6 +5,7 @@ API endpoints for meal plan catalog, nutrition logging, and daily summaries.
 
 from datetime import datetime
 from flask import Blueprint, request, jsonify, g, current_app
+from app.extensions import db
 from app.services.nutrition_service import NutritionService
 from app.middleware.auth_middleware import token_required, admin_required
 
