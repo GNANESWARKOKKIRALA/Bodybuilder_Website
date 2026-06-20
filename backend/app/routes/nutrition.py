@@ -150,10 +150,15 @@ def assign_nutrition_plan():
     if not user_id:
         return jsonify({"success": False, "message": "User ID is required", "data": None}), 400
 
-    from app.models.user import UserProfile
+    from app.models.user import User, UserProfile
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"success": False, "message": "User not found", "data": None}), 404
+
     profile = UserProfile.query.filter_by(user_id=user_id).first()
     if not profile:
-        return jsonify({"success": False, "message": "User profile not found", "data": None}), 404
+        profile = UserProfile(user_id=user_id)
+        db.session.add(profile)
 
     profile.nutrition_plan_id = plan_id
     db.session.commit()
