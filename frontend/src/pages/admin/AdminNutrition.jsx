@@ -85,7 +85,7 @@ export default function AdminNutrition() {
 
   const handleCreatePlan = async (e) => {
     e.preventDefault();
-    if (!name.strip()) return;
+    if (!name.trim()) return;
 
     try {
       setActionLoading(true);

@@ -94,7 +94,7 @@ export default function AdminWorkouts() {
 
   const handleCreateProgram = async (e) => {
     e.preventDefault();
-    if (!name.strip()) return;
+    if (!name.trim()) return;
     
     try {
       setActionLoading(true);

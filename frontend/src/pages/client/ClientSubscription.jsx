@@ -628,16 +628,10 @@ export default function ClientSubscription() {
                             type="text"
                             value={upiId}
                             onChange={(e) => setUpiId(e.target.value)}
-                            placeholder="username@upi"
-                            className="input w-full bg-dark-950/80 border-white/10 text-white text-xs pl-3 pr-16 py-2.5 rounded-lg focus:border-gold-500/50"
+                            placeholder=""
+                            autoComplete="off"
+                            className="input w-full bg-dark-950/80 border-white/10 text-white text-xs pl-3 py-2.5 rounded-lg focus:border-gold-500/50"
                           />
-                          <button
-                            type="button"
-                            onClick={() => setUpiId(user?.email?.split('@')[0] + (paymentMethod === 'phonepe' ? '@ybl' : '@okaxis'))}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold text-gold-500 hover:text-gold-400 px-2 py-1 rounded bg-white/5 hover:bg-white/10"
-                          >
-                            Autofill
-                          </button>
                         </div>
                         <p className="text-[10px] text-dark-500">
                           {paymentMethod === 'phonepe' ? 'PhonePe handles: @ybl, @axl, @ibl' : 'GPay handles: @okaxis, @okhdfcbank, @okicici'}
@@ -700,7 +694,8 @@ export default function ClientSubscription() {
                           type="text"
                           value={cardNo}
                           onChange={(e) => setCardNo(e.target.value.replace(/\D/g, '').substring(0, 16))}
-                          placeholder="Card Number (16 Digits)"
+                          placeholder=""
+                          autoComplete="off"
                           className="input w-full bg-dark-950/80 border-white/10 text-white text-xs pl-3 py-2 rounded-lg"
                         />
                         <div className="grid grid-cols-2 gap-2">
@@ -708,14 +703,16 @@ export default function ClientSubscription() {
                             type="text"
                             value={cardExpiry}
                             onChange={(e) => setCardExpiry(e.target.value.substring(0, 5))}
-                            placeholder="MM/YY"
+                            placeholder=""
+                            autoComplete="off"
                             className="input w-full bg-dark-950/80 border-white/10 text-white text-xs pl-3 py-2 rounded-lg text-center"
                           />
                           <input
                             type="password"
                             value={cardCvv}
                             onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').substring(0, 3))}
-                            placeholder="CVV"
+                            placeholder=""
+                            autoComplete="off"
                             className="input w-full bg-dark-950/80 border-white/10 text-white text-xs pl-3 py-2 rounded-lg text-center"
                           />
                         </div>
