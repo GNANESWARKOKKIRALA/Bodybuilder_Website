@@ -14,12 +14,8 @@ class BaseConfig:
     """Base configuration shared across all environments."""
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_size": 10,
-        "pool_recycle": 3600,
-        "pool_pre_ping": True,
-        "max_overflow": 20,
-    }
+    # SQLite does not use connection pooling
+    SQLALCHEMY_ENGINE_OPTIONS = {}
 
     # JWT
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwt-dev-secret")
@@ -55,7 +51,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "mysql+pymysql://root:password@localhost:3306/gnaneswar_fitness",
+        "sqlite:///gnaneswar_fitness.db",
     )
     SQLALCHEMY_ECHO = False
 
@@ -66,14 +62,17 @@ class TestingConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "TEST_DATABASE_URL",
-        "mysql+pymysql://root:password@localhost:3306/gnaneswar_fitness_test",
+        "sqlite:///gnaneswar_fitness_test.db",
     )
 
 
 class ProductionConfig(BaseConfig):
     """Production environment configuration."""
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "sqlite:////home/bodybuilder2024/Bodybuilder_Website/backend/gnaneswar_fitness.db",
+    )
     RATELIMIT_DEFAULT = "100/hour"
 
 

@@ -34,12 +34,38 @@ def create_app(config_name: str | None = None) -> Flask:
     # Register error handlers
     _register_error_handlers(app)
 
+    # Auto-create all SQLite tables on first run
+    with app.app_context():
+        db.create_all()
+        _seed_admin(app)
+
     # Health check
     @app.route("/api/health")
     def health():
         return jsonify({"success": True, "message": "Gnaneswar Fitness Platform API is running", "data": {"version": "1.0.0"}})
 
     return app
+
+
+def _seed_admin(app) -> None:
+    """Create the default admin user if it doesn't exist yet."""
+    from .models.user import User
+    from .extensions import db
+    import bcrypt as _bcrypt
+
+    with app.app_context():
+        if not User.query.filter_by(email="gapbodybuilder@gmail.com").first():
+            hashed = _bcrypt.hashpw("Kgap@123".encode(), _bcrypt.gensalt()).decode()
+            admin = User(
+                name="Gnaneswar",
+                email="gapbodybuilder@gmail.com",
+                password_hash=hashed,
+                role="admin",
+                is_active=True,
+            )
+            db.session.add(admin)
+            db.session.commit()
+
 
 
 def _register_blueprints(app: Flask) -> None:
