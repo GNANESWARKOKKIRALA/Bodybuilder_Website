@@ -57,7 +57,8 @@ def _seed_admin(app) -> None:
         if not User.query.filter_by(email="gapbodybuilder@gmail.com").first():
             hashed = _bcrypt.hashpw("Kgap@123".encode(), _bcrypt.gensalt()).decode()
             admin = User(
-                name="Gnaneswar",
+                first_name="Gnaneswar",
+                last_name="",
                 email="gapbodybuilder@gmail.com",
                 password_hash=hashed,
                 role="admin",
