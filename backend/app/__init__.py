@@ -4,7 +4,7 @@ Creates and configures the Flask application instance.
 """
 
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from .config import config_by_name
 from .extensions import db, cors, migrate, limiter
 
@@ -14,7 +14,8 @@ def create_app(config_name: str | None = None) -> Flask:
     if config_name is None:
         config_name = os.getenv("FLASK_ENV", "development")
 
-    app = Flask(__name__)
+    dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../frontend/dist'))
+    app = Flask(__name__, static_folder=dist_dir, static_url_path='')
     app.config.from_object(config_by_name[config_name])
 
     # Initialize extensions
@@ -43,6 +44,14 @@ def create_app(config_name: str | None = None) -> Flask:
     @app.route("/api/health")
     def health():
         return jsonify({"success": True, "message": "Gnaneswar Fitness Platform API is running", "data": {"version": "1.0.0"}})
+
+    # Serve React Frontend for any non-API routes
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve(path):
+        if path.startswith("api/"):
+            return jsonify({"success": False, "message": "API endpoint not found", "data": None}), 404
+        return send_from_directory(app.static_folder, 'index.html')
 
     return app
 
