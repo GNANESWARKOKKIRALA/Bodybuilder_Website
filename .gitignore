@@ -18,7 +18,6 @@ frontend/public/uploads/
 
 # Node / Front‑end
 node_modules/
-frontend/dist/
 
 # IDE / editor artefacts
 .idea/
