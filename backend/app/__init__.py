@@ -15,7 +15,7 @@ def create_app(config_name: str | None = None) -> Flask:
         config_name = os.getenv("FLASK_ENV", "development")
 
     dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../frontend/dist'))
-    app = Flask(__name__, static_folder=dist_dir, static_url_path='')
+    app = Flask(__name__, static_folder=dist_dir, static_url_path='/static_assets')
     app.config.from_object(config_by_name[config_name])
 
     # Initialize extensions
@@ -51,6 +51,12 @@ def create_app(config_name: str | None = None) -> Flask:
     def serve(path):
         if path.startswith("api/"):
             return jsonify({"success": False, "message": "API endpoint not found", "data": None}), 404
+            
+        # Check if the requested path matches a file in our static folder (like assets/index.js or favicon.svg)
+        file_path = os.path.join(app.static_folder, path)
+        if path and os.path.exists(file_path) and os.path.isfile(file_path):
+            return send_from_directory(app.static_folder, path)
+            
         return send_from_directory(app.static_folder, 'index.html')
 
     return app
