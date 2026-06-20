@@ -393,13 +393,14 @@ export default function ClientDashboard() {
             <h2 className="text-lg font-serif font-bold text-white mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-3">
               {quickActions.map((action, i) => (
-                <button
+                <Link
                   key={i}
-                  className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white font-semibold text-sm flex flex-col items-center gap-2 hover:scale-105 transition-transform active:scale-95`}
+                  to={action.href}
+                  className={`p-4 rounded-xl bg-gradient-to-br ${action.color} text-white font-semibold text-sm flex flex-col items-center gap-2 hover:scale-105 transition-transform active:scale-95 text-center`}
                 >
                   <action.icon size={22} />
                   {action.label}
-                </button>
+                </Link>
               ))}
             </div>
           </motion.div>

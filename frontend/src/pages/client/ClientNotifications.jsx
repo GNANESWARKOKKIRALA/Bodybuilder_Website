@@ -61,16 +61,16 @@ export default function ClientNotifications() {
     ? notifications
     : notifications.filter(n => n.category === activeTab);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const markAsRead = async (id) => {
     // Optimistic update
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
     try { await notificationService.markAsRead(id); } catch (_) {}
   };
 
   const markAllRead = async () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     try { await notificationService.markAllRead(); } catch (_) {}
   };
 
@@ -145,7 +145,7 @@ export default function ClientNotifications() {
                   layout
                   onClick={() => markAsRead(n.id)}
                   className={`flex items-start gap-4 p-4 rounded-xl cursor-pointer transition-all hover:bg-dark-800/50 ${
-                    n.read
+                    n.is_read
                       ? 'opacity-60 bg-dark-900/20'
                       : 'bg-dark-900/50 border border-gold-500/10 shadow-lg shadow-black/20'
                   }`}
@@ -155,12 +155,12 @@ export default function ClientNotifications() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className={`text-sm font-semibold ${n.read ? 'text-dark-400' : 'text-white'}`}>
+                      <h3 className={`text-sm font-semibold ${n.is_read ? 'text-dark-400' : 'text-white'}`}>
                         {n.title}
                       </h3>
-                      {!n.read && <span className="w-2 h-2 rounded-full bg-gold-400 flex-shrink-0 mt-1.5" />}
+                      {!n.is_read && <span className="w-2 h-2 rounded-full bg-gold-400 flex-shrink-0 mt-1.5" />}
                     </div>
-                    <p className={`text-sm mt-1 leading-relaxed ${n.read ? 'text-dark-500' : 'text-dark-300'}`}>
+                    <p className={`text-sm mt-1 leading-relaxed ${n.is_read ? 'text-dark-500' : 'text-dark-300'}`}>
                       {n.message}
                     </p>
                     <p className="text-[11px] text-dark-600 mt-2">{n.time || n.created_at}</p>
