@@ -113,6 +113,7 @@ export const workoutService = {
   assignProgram: (userId, programId) => api.post(`/workouts/assign`, { userId, programId }),
   logWorkout: (data) => api.post('/workouts/logs', data),
   getWorkoutHistory: (params) => api.get('/workouts/logs', { params }),
+  deleteWorkoutLog: (id) => api.delete(`/workouts/logs/${id}`),
   getMyProgram: () => api.get('/workouts/my-program'),
   getSummary: (days) => api.get('/workouts/summary', { params: { days } }),
 };

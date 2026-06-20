@@ -21,14 +21,36 @@ export default function ClientWorkouts() {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
+        let program = null;
+        let historyItems = [];
+
         const programRes = await workoutService.getMyProgram();
         if (programRes.data.success && programRes.data.data.program) {
-          setActiveProgram(programRes.data.data.program);
+          program = programRes.data.data.program;
+          setActiveProgram(program);
         }
         
         const historyRes = await workoutService.getWorkoutHistory();
         if (historyRes.data.success) {
-          setHistory(historyRes.data.data.items || []);
+          historyItems = historyRes.data.data.items || [];
+          setHistory(historyItems);
+        }
+
+        // Initialize markedDone state from history for today
+        if (program) {
+          const todayStr = new Date().toISOString().split('T')[0];
+          const initialMarkedDone = {};
+          program.days?.forEach((day, dayIdx) => {
+            day.exercises?.forEach((we, exIdx) => {
+              const completedToday = historyItems.some(
+                h => h.exercise_id === we.exercise_id && h.workout_date === todayStr
+              );
+              if (completedToday) {
+                initialMarkedDone[`${dayIdx}-${exIdx}`] = true;
+              }
+            });
+          });
+          setMarkedDone(initialMarkedDone);
         }
       } catch (err) {
         console.error("Error loading workout data:", err);
@@ -39,20 +61,45 @@ export default function ClientWorkouts() {
     fetchWorkouts();
   }, []);
 
-  const toggleExercise = (dayIdx, exIdx, exerciseId, sets, reps) => {
+  const toggleExercise = async (dayIdx, exIdx, exerciseId, sets, reps) => {
     const key = `${dayIdx}-${exIdx}`;
     const newStatus = !markedDone[key];
     setMarkedDone(prev => ({ ...prev, [key]: newStatus }));
     
-    // If marking as done, log it to the backend database!
+    const todayStr = new Date().toISOString().split('T')[0];
+
     if (newStatus) {
-      workoutService.logWorkout({
-        exercise_id: exerciseId,
-        sets_completed: sets,
-        reps_completed: String(reps),
-        workout_date: new Date().toISOString().split('T')[0],
-        notes: "Marked done from daily schedule"
-      }).catch(err => console.error("Error logging workout:", err));
+      try {
+        await workoutService.logWorkout({
+          exercise_id: exerciseId,
+          sets_completed: sets,
+          reps_completed: String(reps),
+          workout_date: todayStr,
+          notes: "Marked done from daily schedule"
+        });
+        
+        const historyRes = await workoutService.getWorkoutHistory();
+        if (historyRes.data.success) {
+          setHistory(historyRes.data.data.items || []);
+        }
+      } catch (err) {
+        console.error("Error logging workout:", err);
+      }
+    } else {
+      try {
+        const logEntry = history.find(
+          h => h.exercise_id === exerciseId && h.workout_date === todayStr
+        );
+        if (logEntry && logEntry.id) {
+          await workoutService.deleteWorkoutLog(logEntry.id);
+          const historyRes = await workoutService.getWorkoutHistory();
+          if (historyRes.data.success) {
+            setHistory(historyRes.data.data.items || []);
+          }
+        }
+      } catch (err) {
+        console.error("Error deleting workout log:", err);
+      }
     }
   };
 
