@@ -127,6 +127,7 @@ export const nutritionService = {
   assignPlan: (userId, planId) => api.post('/nutrition/assign', { userId, planId }),
   logMeal: (data) => api.post('/nutrition/log', data),
   getMyPlan: () => api.get('/nutrition/my-plan'),
+  getDailyNutritionSummary: (params) => api.get('/nutrition/summary', { params }),
 };
 
 // --- Booking Service ---

@@ -6,7 +6,7 @@ import {
   FaCrown, FaTachometerAlt, FaUser, FaChartLine, FaDumbbell, FaUtensils,
   FaCalendarAlt, FaBell, FaUsers, FaBlog, FaImages, FaChartBar,
   FaUserTie, FaClipboardList, FaCog, FaSignOutAlt, FaChevronLeft,
-  FaChevronRight, FaMoneyBillWave, FaComments, FaRobot, FaHome
+  FaChevronRight, FaMoneyBillWave, FaComments, FaRobot, FaHome, FaBars
 } from 'react-icons/fa';
 
 const clientMenuItems = [
@@ -37,10 +37,29 @@ const adminMenuItems = [
 
 const Sidebar = ({ isAdmin = false }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const menuItems = isAdmin ? adminMenuItems : clientMenuItems;
+
+  const getMobileBottomItems = () => {
+    if (isAdmin) {
+      return [
+        { name: 'Overview', path: '/admin', icon: FaTachometerAlt },
+        { name: 'Clients', path: '/admin/clients', icon: FaUserTie },
+        { name: 'Workouts', path: '/admin/workouts', icon: FaDumbbell },
+        { name: 'Chat', path: '/admin/chat', icon: FaComments },
+      ];
+    } else {
+      return [
+        { name: 'Dashboard', path: '/dashboard', icon: FaTachometerAlt },
+        { name: 'Workouts', path: '/dashboard/workouts', icon: FaDumbbell },
+        { name: 'Nutrition', path: '/dashboard/nutrition', icon: FaUtensils },
+        { name: 'Chat', path: '/dashboard/chat', icon: FaComments },
+      ];
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -169,7 +188,7 @@ const Sidebar = ({ isAdmin = false }) => {
       {/* Mobile Bottom Nav */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/10">
         <div className="flex items-center justify-around px-2 py-2">
-          {(isAdmin ? adminMenuItems.slice(0, 5) : clientMenuItems.slice(0, 5)).map((item) => {
+          {getMobileBottomItems().map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
@@ -184,8 +203,116 @@ const Sidebar = ({ isAdmin = false }) => {
               </Link>
             );
           })}
+          
+          {/* More Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg transition-all text-dark-500`}
+          >
+            <FaBars className="text-lg" />
+            <span className="text-[10px] font-medium">More</span>
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex justify-end"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="w-[280px] h-full bg-dark-900/95 border-l border-white/5 p-6 flex flex-col justify-between overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg gradient-gold flex items-center justify-center">
+                      <FaCrown className="text-dark-950 text-sm" />
+                    </div>
+                    <span className="font-bold text-gradient-gold text-sm">GNANESWAR</span>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-dark-400 hover:text-white p-1 rounded-lg"
+                  >
+                    <FaChevronRight size={16} />
+                  </button>
+                </div>
+
+                {/* User Card */}
+                <div className="p-3 rounded-xl glass-light mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
+                      <span className="text-dark-950 font-bold text-sm">
+                        {user?.first_name?.[0]?.toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="text-sm font-semibold text-white truncate">{user?.full_name || 'User'}</p>
+                      <p className="text-xs text-dark-400 truncate">{user?.email || 'user@email.com'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Menu Links */}
+                <nav className="space-y-1.5">
+                  {menuItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                          isActive
+                            ? 'bg-gold-500/15 text-gold-400 border border-gold-500/20'
+                            : 'text-dark-400 hover:text-white'
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <item.icon className="text-lg flex-shrink-0" />
+                        <span className="text-sm font-medium">{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              {/* Bottom Actions */}
+              <div className="border-t border-white/5 pt-4 space-y-2 mt-6">
+                <Link
+                  to="/"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-dark-400 hover:text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FaHome className="text-lg flex-shrink-0" />
+                  <span className="text-sm font-medium">Back to Website</span>
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-dark-400 hover:text-red-400 hover:bg-red-500/10 w-full"
+                >
+                  <FaSignOutAlt className="text-lg flex-shrink-0" />
+                  <span className="text-sm font-medium">Sign Out</span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
