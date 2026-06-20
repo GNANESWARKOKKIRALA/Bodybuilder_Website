@@ -1,0 +1,27 @@
+# Python & Flask
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+venv/
+*.log
+
+# Environment variables
+.env
+.env.example
+
+# Uploads (runtime files)
+backend/app/uploads/
+frontend/public/uploads/
+
+# Node / Front‑end
+node_modules/
+frontend/dist/
+
+# IDE / editor artefacts
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

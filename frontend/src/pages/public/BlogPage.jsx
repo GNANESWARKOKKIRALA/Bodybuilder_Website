@@ -1,0 +1,312 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import {
+  FaArrowRight,
+  FaClock,
+  FaUser,
+  FaChevronLeft,
+  FaChevronRight,
+  FaBookOpen,
+  FaDumbbell,
+  FaAppleAlt,
+  FaBrain,
+  FaTrophy,
+  FaHeart,
+  FaSearch,
+} from 'react-icons/fa';
+import { HiSparkles, HiMail } from 'react-icons/hi';
+import { GiMuscleUp } from 'react-icons/gi';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i = 0) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.7, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
+
+const categories = [
+  { name: 'All', icon: FaBookOpen },
+  { name: 'Training Tips', icon: FaDumbbell },
+  { name: 'Nutrition', icon: FaAppleAlt },
+  { name: 'Mindset', icon: FaBrain },
+  { name: 'Competition', icon: FaTrophy },
+  { name: 'Lifestyle', icon: FaHeart },
+];
+
+const featuredPost = {
+  title: 'The Ultimate Guide to Progressive Overload: Why It\'s the #1 Principle for Muscle Growth',
+  excerpt: 'If you\'re not progressively overloading, you\'re not growing. Period. This comprehensive guide breaks down the science, debunks common myths, and gives you a practical 12-week framework to implement progressive overload across every major lift.',
+  category: 'Training Tips',
+  date: 'June 10, 2026',
+  readTime: '12 min read',
+  author: 'Gnaneswar',
+  icon: GiMuscleUp,
+  gradient: 'from-gold-500/20 via-gold-700/10 to-dark-900',
+};
+
+const posts = [
+  {
+    title: '5 Nutrition Myths That Are Killing Your Gains',
+    excerpt: 'Eating after 8pm makes you fat? Carbs are the enemy? Let\'s destroy these myths with actual science and get your nutrition on track.',
+    category: 'Nutrition',
+    date: 'June 5, 2026',
+    readTime: '7 min read',
+    author: 'Gnaneswar',
+    icon: FaAppleAlt,
+    gradient: 'from-green-500/15 to-dark-900',
+  },
+  {
+    title: 'How to Build a Champion Mindset in the Gym',
+    excerpt: 'The difference between good and great isn\'t genetics — it\'s mental fortitude. Here are 5 mindset shifts that separate champions from everyone else.',
+    category: 'Mindset',
+    date: 'May 28, 2026',
+    readTime: '6 min read',
+    author: 'Gnaneswar',
+    icon: FaBrain,
+    gradient: 'from-purple-500/15 to-dark-900',
+  },
+  {
+    title: 'Your First Bodybuilding Competition: A Complete Timeline',
+    excerpt: 'Thinking about competing? Here\'s your month-by-month roadmap from off-season to stage day, including peak week protocols.',
+    category: 'Competition',
+    date: 'May 20, 2026',
+    readTime: '15 min read',
+    author: 'Gnaneswar',
+    icon: FaTrophy,
+    gradient: 'from-yellow-500/15 to-dark-900',
+  },
+  {
+    title: 'The Perfect Morning Routine for Maximum Productivity & Gains',
+    excerpt: 'How you start your day determines how you finish it. This morning routine optimises hormone production, energy, and workout performance.',
+    category: 'Lifestyle',
+    date: 'May 14, 2026',
+    readTime: '5 min read',
+    author: 'Gnaneswar',
+    icon: FaHeart,
+    gradient: 'from-red-500/15 to-dark-900',
+  },
+  {
+    title: 'Deload Weeks: The Secret Weapon for Breaking Plateaus',
+    excerpt: 'Think rest is for the weak? Think again. Strategic deload weeks are the secret to long-term, injury-free progress.',
+    category: 'Training Tips',
+    date: 'May 7, 2026',
+    readTime: '8 min read',
+    author: 'Gnaneswar',
+    icon: FaDumbbell,
+    gradient: 'from-blue-500/15 to-dark-900',
+  },
+  {
+    title: 'Meal Prep Mastery: How to Prep a Week of Meals in 2 Hours',
+    excerpt: 'Stop using "no time" as an excuse. This step-by-step meal prep system will save you 10+ hours per week while keeping your nutrition on point.',
+    category: 'Nutrition',
+    date: 'April 30, 2026',
+    readTime: '9 min read',
+    author: 'Gnaneswar',
+    icon: FaAppleAlt,
+    gradient: 'from-emerald-500/15 to-dark-900',
+  },
+];
+
+export default function BlogPage() {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [email, setEmail] = useState('');
+
+  const filtered = activeCategory === 'All'
+    ? posts
+    : posts.filter((p) => p.category === activeCategory);
+
+  return (
+    <>
+      <Helmet>
+        <title>Blog — Training Tips, Nutrition & Mindset | GFP</title>
+        <meta name="description" content="Read expert fitness articles from Gnaneswar. Training tips, nutrition advice, mindset coaching, competition prep guides, and lifestyle content." />
+        <link rel="canonical" href="https://gnaneswarfitness.com/blog" />
+      </Helmet>
+
+      {/* ═══════ HERO ═══════ */}
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0 gradient-hero" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.08),transparent_60%)]" />
+        <div className="container-custom relative z-10 py-32 text-center">
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+            <motion.span variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
+              <HiSparkles className="text-gold-400" />
+              <span className="text-sm text-gold-300 tracking-wider uppercase font-medium">Knowledge is Power</span>
+            </motion.span>
+            <motion.h1 variants={fadeUp} className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+              The GFP <span className="text-gradient-gold">Blog</span>
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-dark-300 text-lg max-w-2xl mx-auto">
+              Expert insights on training, nutrition, mindset, and the lifestyle of champions. Free knowledge that can change your life.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ FEATURED POST ═══════ */}
+      <section className="section-padding relative -mt-8">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+            className="card overflow-hidden group cursor-pointer"
+          >
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* image placeholder */}
+              <div className={`aspect-video md:aspect-auto bg-gradient-to-br ${featuredPost.gradient} flex items-center justify-center relative min-h-[280px]`}>
+                <featuredPost.icon className="text-8xl text-gold-400/20" />
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full gradient-gold text-dark-950 text-xs font-bold uppercase tracking-wider">
+                  Featured
+                </div>
+              </div>
+              {/* content */}
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <span className="text-gold-400 text-xs font-bold uppercase tracking-wider mb-3">{featuredPost.category}</span>
+                <h2 className="font-serif text-2xl md:text-3xl font-bold mb-4 group-hover:text-gold-400 transition-colors">
+                  {featuredPost.title}
+                </h2>
+                <p className="text-dark-300 text-sm leading-relaxed mb-6">{featuredPost.excerpt}</p>
+                <div className="flex items-center gap-4 text-xs text-dark-400">
+                  <span className="flex items-center gap-1"><FaUser className="text-gold-500/50" /> {featuredPost.author}</span>
+                  <span className="flex items-center gap-1"><FaClock className="text-gold-500/50" /> {featuredPost.readTime}</span>
+                  <span>{featuredPost.date}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ CATEGORY FILTERS ═══════ */}
+      <section className="py-6">
+        <div className="container-custom">
+          <motion.div
+            className="flex flex-wrap gap-2 justify-center"
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          >
+            {categories.map((cat) => (
+              <button
+                key={cat.name}
+                onClick={() => setActiveCategory(cat.name)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+                  activeCategory === cat.name
+                    ? 'gradient-gold text-dark-950'
+                    : 'glass text-dark-300 hover:text-white'
+                }`}
+              >
+                <cat.icon className="text-xs" /> {cat.name}
+              </button>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ BLOG GRID ═══════ */}
+      <section className="section-padding relative pt-8">
+        <div className="container-custom">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={stagger}
+          >
+            {filtered.map((post, i) => (
+              <motion.article key={i} variants={fadeUp} custom={i} className="card overflow-hidden group cursor-pointer flex flex-col">
+                {/* image placeholder */}
+                <div className={`aspect-video bg-gradient-to-br ${post.gradient} flex items-center justify-center relative`}>
+                  <post.icon className="text-5xl text-white/10" />
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-[10px] font-bold uppercase tracking-wider text-gold-300">
+                    {post.category}
+                  </div>
+                </div>
+                {/* content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="font-serif text-lg font-semibold mb-3 group-hover:text-gold-400 transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-dark-300 text-sm leading-relaxed mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
+                  <div className="flex items-center justify-between text-xs text-dark-400 pt-4 border-t border-dark-800">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1"><FaUser className="text-gold-500/50" /> {post.author}</span>
+                      <span>{post.date}</span>
+                    </div>
+                    <span className="flex items-center gap-1"><FaClock className="text-gold-500/50" /> {post.readTime}</span>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+
+          {filtered.length === 0 && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+              <FaBookOpen className="text-5xl text-dark-700 mx-auto mb-4" />
+              <p className="text-dark-400">No articles found in this category yet. Check back soon!</p>
+            </motion.div>
+          )}
+
+          {/* pagination */}
+          <motion.div
+            className="flex items-center justify-center gap-2 mt-12"
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+          >
+            <button className="w-10 h-10 rounded-lg glass flex items-center justify-center text-dark-400 hover:text-gold-400 transition-colors">
+              <FaChevronLeft className="text-sm" />
+            </button>
+            {[1, 2, 3].map((page) => (
+              <button
+                key={page}
+                className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-medium transition-all ${
+                  page === 1 ? 'gradient-gold text-dark-950' : 'glass text-dark-300 hover:text-white'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button className="w-10 h-10 rounded-lg glass flex items-center justify-center text-dark-400 hover:text-gold-400 transition-colors">
+              <FaChevronRight className="text-sm" />
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ NEWSLETTER ═══════ */}
+      <section className="section-padding gradient-dark relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_60%)]" />
+        <div className="container-custom relative z-10">
+          <motion.div
+            className="max-w-2xl mx-auto text-center"
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={stagger}
+          >
+            <motion.div variants={fadeUp} className="w-16 h-16 rounded-2xl gradient-gold flex items-center justify-center mx-auto mb-6">
+              <HiMail className="text-dark-950 text-2xl" />
+            </motion.div>
+            <motion.h2 variants={fadeUp} className="font-serif text-3xl md:text-4xl font-bold mb-4">
+              Never Miss an <span className="text-gradient-gold">Article</span>
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-dark-300 mb-8">
+              Get the latest training insights, nutrition tips, and exclusive content delivered to your inbox every week.
+            </motion.p>
+            <motion.form
+              variants={fadeUp}
+              className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-field flex-1"
+              />
+              <button type="submit" className="btn-primary whitespace-nowrap">
+                Subscribe <FaArrowRight className="text-sm" />
+              </button>
+            </motion.form>
+          </motion.div>
+        </div>
+      </section>
+    </>
+  );
+}

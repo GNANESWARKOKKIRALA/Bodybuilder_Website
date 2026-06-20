@@ -1,0 +1,25 @@
+# Python / Flask specific ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+venv/
+*.log
+
+# Environment files
+.env
+.env.example
+
+# Uploads / runtime generated files
+app/uploads/
+
+# Static assets built by the front‑end (if accidentally copied here)
+frontend/dist/
+
+# IDE / editor artefacts
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
