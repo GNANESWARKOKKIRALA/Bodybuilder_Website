@@ -124,7 +124,7 @@ export default function ClientNutrition() {
           transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           className="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center"
         >
-          <FiUtensils className="text-dark-950 text-xl" />
+          <FaUtensils className="text-dark-950 text-xl" />
         </motion.div>
       </div>
     );
